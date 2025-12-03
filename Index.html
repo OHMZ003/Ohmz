@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>OHMZ – Trade & Earn Smarter</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root{--bg:#121212;--surface:#1e1e1e;--glass:rgba(30,30,30,0.6);--accent:#00e676;--text:#ffffff;--gray:#b0b0b0;--radius:12px;--transition:0.3s ease}
+    *{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+    body{background:var(--bg);color:var(--text);line-height:1.6}
+    #intro{position:fixed;inset:0;display:grid;place-content:center;background:var(--bg);z-index:999}
+    #intro svg{width:90vw;max-width:400px;height:auto}
+    .card{fill:var(--surface);stroke:var(--accent);stroke-width:2;rx:var(--radius)}
+    #logo-finish{opacity:0;transition:opacity 0.6s ease}
+    header{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.5rem;background:linear-gradient(135deg,var(--surface) 0%,rgba(30,30,30,0.8) 100%);border-bottom:1px solid rgba(255,255,255,.08);border-radius:0 0 var(--radius) var(--radius);backdrop-filter:blur(10px);flex-wrap:wrap;gap:1rem;position:sticky;top:0;z-index:998}
+    .logo{display:flex;align-items:center;gap:.75rem;text-decoration:none}
+    .logo img{height:40px;width:auto}
+    .logo span{font-size:1.5rem;font-weight:700;letter-spacing:1px;color:var(--accent)}
+    nav{display:flex;gap:1.5rem}
+    nav a{color:var(--gray);text-decoration:none;font-weight:500;transition:color var(--transition)}
+    nav a:hover{color:var(--accent)}
+    main{padding:2rem 1rem;max-width:800px;margin:auto;text-align:center}
+    h1{font-size:2rem;margin-bottom:1rem}
+    p{font-size:1rem;color:var(--gray);max-width:60ch;margin:auto}
+    .section{margin:3rem 0}
+    .grid{display:grid;gap:1.5rem;grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+    .card-item{background:var(--glass);border:1px solid rgba(255,255,255,.08);border-radius:var(--radius);padding:1.5rem;text-align:center;display:flex;flex-direction:column;gap:.75rem;backdrop-filter:blur(10px);transition:transform var(--transition),box-shadow var(--transition)}
+    .card-item:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,230,118,.15)}
+    .card-item h3{color:var(--accent)}
+    .card-item button{background:var(--accent);color:#000;border:none;padding:.6rem 1.2rem;border-radius:var(--radius);font-weight:600;cursor:pointer;transition:filter var(--transition)}
+    .card-item button:hover{filter:brightness(1.15)}
+    .big-btn{width:100%;margin-top:1rem;padding:.75rem;border:none;border-radius:var(--radius);font-weight:700;font-size:1rem;cursor:pointer;transition:filter var(--transition)}
+    .big-btn.deposit{background:var(--accent);color:#000}
+    .big-btn.withdraw{background:#ff4d4d;color:#fff}
+    .funds-card{background:var(--glass);border:1px solid rgba(255,255,255,.08);border-radius:var(--radius);padding:1rem;margin:1rem 0;text-align:left;backdrop-filter:blur(10px)}
+    .funds-row{display:flex;justify-content:space-between;margin:.5rem 0;font-size:1rem}
+    .funds-row span:last-child{font-weight:700;color:var(--accent)}
+    .checkout-box,.deposit-box,.withdraw-box{background:var(--glass);border:1px solid rgba(255,255,255,.08);border-radius:var(--radius);padding:1.5rem;margin:1.5rem auto;max-width:400px;text-align:left;backdrop-filter:blur(10px)}
+    .checkout-box label,.deposit-box label,.withdraw-box label{margin-top:.75rem;display:block;font-size:.9rem;color:var(--gray)}
+    .checkout-box input,.deposit-box input,.withdraw-box input,.checkout-box select,.deposit-box select,.withdraw-box select{width:100%;padding:.5rem;margin-top:.25rem;border:1px solid rgba(255,255,255,.2);background:#000;color:var(--text);border-radius:var(--radius)}
+    .checkout-box button,.deposit-box button,.withdraw-box button{width:100%;margin-top:1rem;padding:.6rem;border:none;border-radius:var(--radius);background:var(--accent);color:#000;font-weight:600;cursor:pointer;transition:filter var(--transition)}
+    .checkout-box button:hover,.deposit-box button:hover,.withdraw-box button:hover{filter:brightness(1.15)}
+    #cart-icon{position:fixed;bottom:20px;right:20px;background:var(--accent);color:#000;width:56px;height:56px;border-radius:50%;display:grid;place-content:center;font-weight:700;box-shadow:0 4px 14px rgba(0,230,118,.4);cursor:pointer;z-index:999}
+    #auth-wrapper{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9999;display:grid;place-content:center}
+    .auth-card,.dashboard{background:#111;border:1px solid #00e676;border-radius:var(--radius);padding:2rem;width:320px;text-align:center}
+    .auth-card input{width:100%;margin:.5rem 0;padding:.6rem;border:1px solid rgba(255,255,255,.2);background:#000;color:#fff;border-radius:var(--radius)}
+    .auth-card button,.dashboard button{width:100%;margin-top:1rem;padding:.6rem;border:none;border-radius:var(--radius);background:var(--accent);color:#000;font-weight:700;cursor:pointer}
+    #switch{margin-top:1rem;color:var(--gray);font-size:.9rem} #switch span{color:var(--accent);cursor:pointer}
+    #advice-float{position:fixed;bottom:20px;left:20px;max-width:280px;background:rgba(30,30,30,0.8);border:1px solid var(--accent);border-radius:var(--radius);padding:.75rem 1rem;font-size:.9rem;color:#fff;z-index:9999;backdrop-filter:blur(10px);display:flex;align-items:center;gap:.5rem}
+    #advice-text{line-height:1.4}
+    .close-advice{background:none;border:none;color:var(--accent);font-size:1rem;cursor:pointer;margin-left:auto}
+    #ohmz-mic{position:fixed;bottom:90px;right:20px;width:56px;height:56px;border-radius:50%;background:var(--accent);color:#000;display:grid;place-content:center;font-size:1.4rem;cursor:pointer;box-shadow:0 4px 14px rgba(0,230,118,.4);z-index:999;transition:background var(--transition)}
+    @media(max-width:600px){nav{gap:1rem} h1{font-size:1.5rem} .big-btn{font-size:.9rem}}
+  </style>
+</head>
+<body>
+  <!-- ---------- INTRO ---------- -->
+  <section id="intro"><svg viewBox="0 0 400 300"><g id="cards"></g>
+    <image id="logo-finish" href="1000015620.png" x="150" y="110" width="100" height="100"/>
+  </svg></section>
+
+  <!-- ---------- HEADER ---------- -->
+  <header id="site-header" hidden>
+    <a class="logo" href="#" onclick="showHome();return false;"><img src="1000015620.png" alt="OHMZ"><span>OHMZ</span></a>
+    <nav>
+      <a href="#" onclick="showHome();return false;">Home</a>
+      <a href="#" onclick="showFunds();return false;">Funds</a>
+      <a href="#" onclick="checkAuth();return false;">Login</a>
+    </nav>
+  </header>
+
+  <!-- ---------- HOME ---------- -->
+  <main id="home" hidden>
+    <h1>Trade & Earn Smarter</h1>
+    <p>All-in-one hub for trading, content & digital services – priced in USD, delivered instantly.</p>
+
+    <!-- Balance card -->
+    <div class="section">
+      <div class="funds-card">
+        <div class="funds-row"><span>Balance</span><span id="homeBalance">$ 0.00</span></div>
+        <div class="funds-row"><span>Equity</span><span id="homeEquity">$ 0.00</span></div>
+        <div class="funds-row"><span>Today</span><span id="homePnl">$ 0.00</span></div>
+      </div>
+      <button class="big-btn deposit" onclick="showFunds()">Manage Funds</button>
+    </div>
+
+    <!-- Services -->
+    <div class="section">
+      <h2>Our Services (USD prices)</h2>
+      <div class="grid" id="services"></div>
+    </div>
+
+    <!-- Cart -->
+    <div class="section" id="cartSec" style="display:none;">
+      <h2>Cart</h2>
+      <div class="checkout-box">
+        <div id="cartItems"></div>
+        <div><strong>Total: $<span id="cartTotal">0</span> USD</strong></div>
+        <button class="big-btn deposit" onclick="showCheckout()">Checkout</button>
+      </div>
+    </div>
+
+    <!-- Checkout -->
+    <div id="checkout" class="checkout-box" style="display:none;">
+      <h3>Checkout</h3>
+      <div id="checkoutItems"></div>
+      <div><strong>Total: $<span id="checkoutTotal">0</span> USD</strong></div>
+      <label>Pay with</label><br>
+      <select id="checkoutMethod">
+        <option value="paypal">PayPal (USD)</option>
+        <option value="mpesa">MPESA (USD→KES)</option>
+      </select><br>
+      <button class="big-btn deposit" onclick="payNow()">Pay Now</button>
+      <div id="checkoutStatus"></div>
+    </div>
+  </main>
+
+  <!-- ---------- FUNDS PAGE ---------- -->
+  <section id="funds" class="funds-page" style="display:none;">
+    <h2>My Funds</h2>
+    <div class="funds-card">
+      <div class="funds-row"><span>Balance</span><span id="fundsBalance">$ 0.00</span></div>
+      <div class="funds-row"><span>Equity</span><span id="fundsEquity">$ 0.00</span></div>
+      <div class="funds-row"><span>Today</span><span id="fundsPnl">$ 0.00</span></div>
+    </div>
+    <div class="funds-actions">
+      <button class="big-btn deposit" onclick="showDeposit()">Deposit</button>
+      <button class="big-btn withdraw" onclick="showWithdraw()">Withdraw</button>
+    </div>
+    <!-- Deposit -->
+    <div id="fundsDeposit" class="deposit-box" style="display:none;">
+      <h3>Deposit USD</h3>
+      <label>Amount (USD)</label><br><input type="number" id="depUSD" min="1" step="0.01"><br>
+      <label>Pay with</label><br>
+      <select id="depMethod"><option value="paypal">PayPal (USD)</option><option value="mpesa">MPESA (USD→KES)</option></select><br>
+      <button onclick="fundsDeposit()">Deposit Now</button>
+      <div id="depStatus"></div>
+    </div>
+    <!-- Withdraw -->
+    <div id="fundsWithdraw" class="withdraw-box" style="display:none;">
+      <h3>Withdraw USD</h3>
+      <label>Amount (USD)</label><br><input type="number" id="wdUSD" min="10" step="0.01"><br>
+      <label>Receive via</label><br>
+      <select id="wdMethod"><option value="mpesa">MPESA (KES) 0768049570</option><option value="paypal">PayPal (auto FX)</option></select><br>
+      <button onclick="fundsWithdraw()">Withdraw Now</button>
+      <div id="wdStatus"></div>
+    </div>
+  </section>
+
+  <!-- ---------- CART / AUTH / VOICE / ADVICE ---------- -->
+  <div id="cart-icon" hidden>0</div>
+  <div id="auth-wrapper"></div>
+  <div id="advice-float">
+    <span id="advice-text"></span>
+    <button class="close-advice" onclick="dismissAdvice()">✕</button>
+  </div>
+  <div id="ohmz-mic" title="Toggle Voice AI" onclick="toggleOHMZ()">🎤</div>
+
+  <!-- ---------- PAYPAL SDK ---------- -->
+  <script src="https://www.paypal.com/sdk/js?client-id=sb&currency=USD&disable-funding=credit,card"></script>
+
+  <!-- ---------- MAIN JS ---------- -->
+<script type="module">
+const API = 'https://ohmzbs.com/api';
+
+/* ---------- navigation ---------- -->
+window.showHome = () => {
+  document.getElementById('home').style.display='block'; document.getElementById('funds').style.display='none'; document.getElementById('auth-wrapper').style.display='none';
+};
+window.showFunds = () => {
+  document.getElementById('home').style.display='none'; document.getElementById('funds').style.display='block'; document.getElementById('auth-wrapper').style.display='none'; loadFunds(); startAdvice();
+};
+window.showDeposit  = () => { document.getElementById('fundsDeposit').style.display='block'; document.getElementById('fundsWithdraw').style.display='none'; };
+window.showWithdraw = () => { document.getElementById('fundsWithdraw').style.display='block'; document.getElementById('fundsDeposit').style.display='none'; };
+window.dismissAdvice = () => document.getElementById('advice-float').style.display='none';
+
+/* ---------- cart ---------- -->
+let cart = JSON.parse(localStorage.ohmzCart||'[]');
+const cartIcon = document.getElementById('cart-icon');
+function syncCart(){
+  localStorage.ohmzCart = JSON.stringify(cart);
+  cartIcon.hidden = cart.length === 0;
+  cartIcon.textContent = cart.length;
+  if(cart.length>0){ document.getElementById('cartSec').style.display='block'; document.getElementById('cartItems').innerHTML=cart.map(i=>`<div>${i.name} - $${i.price} USD</div>`).join(''); document.getElementById('cartTotal').textContent=cart.reduce((s,i)=>s+i.price,0).toFixed(2); } else { document.getElementById('cartSec').style.display='none'; }
+}
+syncCart();
+document.addEventListener('click', e => {
+  if (e.target.matches('button[data-id]')) {
+    const item = catalogue.find(i => i.id === e.target.dataset.id);
+    cart.push({...item, ts:Date.now()}); syncCart(); e.target.textContent = 'Added ✓'; setTimeout(() => e.target.textContent = 'Add to cart', 1200);
+  }
+  if (e.target === cartIcon) showCheckout();
+});
+
+/* ---------- services ---------- -->
+const catalogue = [
+  {id:'invest',     name:'Investment Plans',        price:199, desc:'Personalized portfolio + weekly ROI PDF'},
+  {id:'affiliate',  name:'Affiliate Marketing Kit', price:149, desc:'High-ticket funnels, email swipes, creatives'},
+  {id:'clip',       name:'Viral Clipping',          price:29,  desc:'30-sec reels from your long video (5 pieces)'},
+  {id:'ghost',      name:'Ghost Writing',           price:99,  desc:'500-word blog/LinkedIn post in your tone'},
+  {id:'tv',         name:'TradeView Setup',         price:79,  desc:'Custom indicators + strategy alerts'},
+  {id:'ecom',       name:'E-commerce Store',        price:299, desc:'Ready Shopify import + 20 winning products'},
+  {id:'drop',       name:'Drop Servicing Bundle',   price:179, desc:'White-label SOP + supplier list + calculator'},
+  {id:'edit',       name:'Video Editing',           price:49,  desc:'10-min raw → polished YouTube video'},
+  {id:'market',     name:'Market Brief',            price:19,  desc:'Daily macro & crypto summary (30 days)'},
+  {id:'motivate',   name:'Motivation Pack',         price:39,  desc:'100 shorts + captions + BGM'},
+  {id:'mt5ea',      name:'MetaTrader 5 EA',         price:149, desc:'Licensed scalper bot + set-files'},
+  {id:'derivbot',   name:'Deriv Bot',               price:149, desc:'Volatility 75 auto-bot + template'}
+];
+const services = document.getElementById('services');
+catalogue.forEach(s => {
+  const card = document.createElement('div');
+  card.className = 'card-item';
+  card.innerHTML = `<h3>${s.name}</h3><p>${s.desc}</p><div><strong>$${s.price} USD</strong></div><button data-id="${s.id}">Add to cart</button>`;
+  services.appendChild(card);
+});
+
+/* ---------- checkout ---------- -->
+window.showCheckout = () => {
+  document.getElementById('checkoutItems').innerHTML = cart.map(i=>`<div>${i.name} - $${i.price} USD</div>`).join(''); document.getElementById('checkoutTotal').textContent = cart.reduce((s,i)=>s+i.price,0).toFixed(2); document.getElementById('checkout').style.display='block'; document.getElementById('home').style.display='none';
+};
+window.payNow = async () => {
+  const method = document.getElementById('checkoutMethod').value;
+  const usd    = Number(document.getElementById('checkoutTotal').textContent);
+  document.getElementById('checkoutStatus').textContent = 'Processing...';
+
+  if(method==='paypal'){
+    document.getElementById('checkoutStatus').innerHTML = '<div id="paypal-checkout"></div>';
+    const order = await fetch(`${API}/payments/paypal-usd-checkout`,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+localStorage.token},body:JSON.stringify({usd,cart})}).then(r=>r.json());
+    paypal.Buttons({
+      createOrder(){return order.id;},
+      onApprove(d){return fetch(`${API}/payments/paypal-usd-capture`,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+localStorage.token},body:JSON.stringify({orderID:d.orderID})}).then(()=>{document.getElementById('checkoutStatus').innerHTML='Payment successful – downloads incoming...'; cart=[]; syncCart(); showHome();})}
+    }).render('#paypal-checkout');
+  }
+
+  if(method==='mpesa'){
+    const phone = prompt('MPESA phone (2547...)','254768049570');
+    if(!phone) return;
+    const res = await fetch(`${API}/payments/mpesa-usd-checkout`,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+localStorage.token},body:JSON.stringify({usd,phone,cart})});
+    const data = await res.json();
+    document.getElementById('checkoutStatus').textContent = data.success ? 'Check your phone for STK-Push (USD→KES)' : 'MPESA failed';
+    if(data.success) pollStatus(data.checkoutRequestID);
+  }
+};
+
+/* ---------- funds deposit / withdraw ---------- -->
+window.fundsDeposit = async () => {
+  const usd    = Number(document.getElementById('depUSD').value);
+  const method = document.getElementById('depMethod').value;
+  if(!usd) return alert('Enter USD amount');
+  document.getElementById('depStatus').textContent = 'Processing...';
+
+  if(method==='paypal'){
+    document.getElementById('depStatus').innerHTML = '<div id="paypal-funds"></div>';
+    const order = await fetch(`${API}/payments/paypal-usd-deposit`,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+localStorage.token},body:JSON.stringify({usd})}).then(r=>r.json());
+    paypal.Buttons({
+      createOrder(){return order.id;},
+      onApprove(d){return fetch(`${API}/payments/paypal-usd-capture`,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+localStorage.token},body:JSON.stringify({orderID:d.orderID})}).then(()=>{document.getElementById('depStatus').textContent='Deposit successful – balance will update'; loadFunds();})}
+    }).render('#paypal-funds');
+  }
+
+  if(method==='mpesa'){
+    const phone = prompt('MPESA phone (2547...)','254768049570');
+    if(!phone) return;
+    const res = await fetch(`${API}/payments/mpesa-usd-deposit`,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+localStorage.token},body:JSON.stringify({usd,phone})});
+    const data = await res.json();
+    document.getElementById('depStatus').textContent = data.success ? 'Check your phone for STK-Push (USD→KES)' : 'MPESA failed';
+    if(data.success) pollDepositStatus(data.checkoutRequestID);
+  }
+};
+
+window.fundsWithdraw = async () => {
+  const usd = Number(document.getElementById('wdUSD').value);
+  const method = document.getElementById('wdMethod').value;
+  if(!usd || usd<=0) return alert('Enter USD amount');
+  document.getElementById('wdStatus').textContent = 'Previewing...';
+
+  const res = await fetch(`${API}/withdraw/preview-fx`,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+localStorage.token},body:JSON.stringify({usd,method})});
+  const data = await res.json();
+  document.getElementById('wdStatus').innerHTML = `
+    <div style="margin-top:1rem;color:#888">
+      Gross: $${data.usd} USD &nbsp; Fee (10 %): $${data.fee} USD &nbsp; <strong>Net: $${data.netUSD} USD</strong><br>
+      You will receive: <strong>${data.localAmount} ${data.localCurrency}</strong>
+    </div>
+    <button class="big-btn withdraw" onclick="confirmWithdrawFx()">Confirm Withdrawal</button>`;
+};
+
+async function confirmWithdrawFx(){
+  const 'Processing = Number(document.getElementById('wdUSD').value);
+  const method = document.getElementById('wdMethod').value;
+  const destination = method==='mpesa' ? '254768049570' : 'denn(method==ui003@gmail.com';
+  const res = await fetch(`${API}/withdraw/create-fx}`,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+localStorage.token},body:JSON.stringify({usd,method,destination})});
+  const data = await res.json();
+  document.getElementById('wdStatus').innerHTML = data.success ? `Withdrawal submitted!<br>Net: $${data.netUSD} USD → ${data.localAmount} ${data.localCurrency}<br>You will receive a confirmation shortly.` : data.msg||'Withdrawal failed';
+  if(data.success) loadFunds();
+};
+
+/* ---------- balance poll ---------- -->
+async function loadFunds(){
+  if(!localStorage.token) return;
+  const res = await fetch(`${API}/users/me`,{headers:{Authorization:'Bearer '+localStorage.token}});
+  if(!res.ok) return;
+  const user = await res.json();
+  document.getElementById('homeBalance').textContent = document.getElementById('fundsBalance').textContent = '$ ' + user.balance.toFixed(2);
+  document.getElementById('homeEquity').textContent   = document.getElementById('fundsEq
